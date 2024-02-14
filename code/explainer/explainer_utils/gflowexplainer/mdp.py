@@ -6,11 +6,12 @@ import numpy as np
 import networkx as nx
 from tqdm import tqdm
 
-import gym
-from gym import spaces
-from gym.utils import seeding
+import gymnasium as gym
+from gymnasium import spaces
+from gymnasium.utils import seeding
 
-from torch_geometric.data import Data, DataLoader, Batch
+from torch_geometric.data import Data, Batch
+from torch_geometric.loader import DataLoader
 
 EPS = 1e-15
 

@@ -8,6 +8,7 @@ import pickle as pkl
 from pathlib import Path
 from torch_geometric.data import InMemoryDataset, Data
 from utils.gen_utils import padded_datalist, from_edge_index_to_adj
+from zipfile import ZipFile
 
 
 class Mutag(InMemoryDataset):
@@ -18,11 +19,17 @@ class Mutag(InMemoryDataset):
 
     @property
     def raw_dir(self):
-        return osp.join(self.root, self.name, "raw")
+        if isinstance(self.root, str):
+            return osp.join(self.root, self.name, "raw")
+        else:
+            return self.root.joinpath(self.name, "raw")
 
     @property
     def processed_dir(self):
-        return osp.join(self.root, self.name, "processed")
+        if isinstance(self.root, str):
+            return osp.join(self.root, self.name, "processed")
+        else:
+            return self.root.joinpath(self.name, "processed")
 
     @property
     def raw_file_names(self):
@@ -38,8 +45,15 @@ class Mutag(InMemoryDataset):
         #raise NotImplementedError
 
     def process(self):
-        with open(self.raw_dir + '/Mutagenicity.pkl', 'rb') as fin:
-            _, original_features, original_labels = pkl.load(fin)
+        file = Path(self.raw_dir) / 'Mutagenicity.pkl.zip'
+        if file.exists():
+            # Load the pickle from the zip without extracting it
+            with ZipFile(file, 'r') as z:
+                # Get the first and only file in the zip
+                with z.open(z.namelist()[0]) as f:
+                    _, original_features, original_labels = pkl.load(f)
+        else:
+            print('Mutagenicity.pkl.zip not found, please download it from github.com/flyingdoog/PGExplainer or Harvard Dataverse')
 
         edge_lists, graph_labels, edge_label_lists, node_type_lists = self.get_graph_data()
 
@@ -85,14 +99,14 @@ class Mutag(InMemoryDataset):
         torch.save((data, slices), self.processed_paths[0])
 
     def get_graph_data(self):
-        pri = self.raw_dir + '/Mutagenicity_'
+        prefix = 'Mutagenicity_'
 
-        file_edges = pri + 'A.txt'
+        file_edges = self.raw_dir / f'{prefix}A.txt'
         # file_edge_labels = pri + 'edge_labels.txt'
-        file_edge_labels = pri + 'edge_gt.txt'
-        file_graph_indicator = pri + 'graph_indicator.txt'
-        file_graph_labels = pri + 'graph_labels.txt'
-        file_node_labels = pri + 'node_labels.txt'
+        file_edge_labels = self.raw_dir / f'{prefix}edge_gt.txt'
+        file_graph_indicator = self.raw_dir / f'{prefix}graph_indicator.txt'
+        file_graph_labels = self.raw_dir / f'{prefix}graph_labels.txt'
+        file_node_labels = self.raw_dir / f'{prefix}node_labels.txt'
 
         edges = np.loadtxt(file_edges, delimiter=',').astype(np.int32)
         try:

@@ -4,7 +4,6 @@ import torch.nn.functional as F
 from torch_geometric.utils import softmax
 from torch_scatter import scatter_max
 import os.path as osp
-from torch_geometric.data import DataLoader
 from explainer.explainer_utils.rcexplainer.reorganizer import *
 from explainer.explainer_utils.rcexplainer.rc_train import *
 import copy

@@ -18,7 +18,7 @@ from utils.gen_utils import (
     normalize_adj,
     sample_large_graph,
 )
-import numpy_indexed as npi
+#import numpy_indexed as npi
 from explainer.gnnexplainer import GNNExplainer, TargetedGNNExplainer
 from explainer.pgexplainer import PGExplainer
 from explainer.pgmexplainer import Node_Explainer

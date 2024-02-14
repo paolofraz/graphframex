@@ -33,7 +33,7 @@ from evaluate.mask_utils import (
 from explainer.node_explainer import *
 from explainer.graph_explainer import *
 from pathlib import Path
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
 
 
 class Explain(object):
@@ -849,7 +849,7 @@ def explain_main(dataset, model, device, args, unseen=False):
         if i == 0:
             results = scores
         else:
-            results = results.append(scores, ignore_index=True)
+            results = pd.concat([results, scores], ignore_index=True)
     ### Save results ###
     save_path = os.path.join(
         args.result_save_dir, args.dataset_name, args.explainer_name

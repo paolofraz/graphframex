@@ -1,7 +1,7 @@
 import torch
 from torch import default_generator, randperm
 from torch.utils.data import random_split, Subset
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
 from dataset import (
     MoleculeDataset,
     SynGraphDataset,
@@ -12,16 +12,16 @@ from dataset import (
     MNIST75sp_Binary,
     Mutag,
     SentiGraphDataset,
-    IEEE24,
-    IEEE39,
-    IEEE118,
-    UK,
-    IEEE24Cont,
-    IEEE39Cont,
-    UKCont,
-    IEEE24ContRndNc,
-    IEEE39ContRndNc,
-    UKContRndNc,
+    #IEEE24,
+    #IEEE39,
+    #IEEE118,
+    #UK,
+    #IEEE24Cont,
+    #IEEE39Cont,
+    #UKCont,
+    #IEEE24ContRndNc,
+    #IEEE39ContRndNc,
+    #UKContRndNc,
 )
 from torch import default_generator
 from utils.parser_utils import arg_parse, get_graph_size_args
@@ -176,9 +176,14 @@ def get_dataloader(
 
 
 if __name__ == "__main__":
-    args = arg_parse()
+    import sys
+
+    print("In module products sys.path[0], __package__ ==", sys.path[0], __package__)
+
+    parsers, args = arg_parse()
     args = get_graph_size_args(args)
     data_params = {
+        "dataset_name": "mutag", # <-- PF Added
         "num_shapes": args.num_shapes,
         "width_basis": args.width_basis,
         "input_dim": args.input_dim,
@@ -186,7 +191,6 @@ if __name__ == "__main__":
         "test_ratio": args.test_ratio,
         "val_ratio": args.val_ratio,
     }
-    dataset = get_dataset(args.data_save_dir, "ba_house", **data_params)
-    # dataset = get_dataset(args.data_save_dir, "cora")
+    dataset = get_dataset(args.data_save_dir, **data_params)
     print(dataset)
     print(dataset.data)

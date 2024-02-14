@@ -13,9 +13,9 @@ from captum.attr import IntegratedGradients, Saliency
 from torch.autograd import Variable
 from torch_geometric.data import Data
 from torch_geometric.utils import to_networkx, to_dense_adj
-from code.explainer.gnnlrp import GNN_LRP
-from code.explainer.pgexplainer import PGExplainer
-from code.utils.math_utils import sigmoid
+#from explainer.gnnlrp import GNN_LRP
+from explainer.pgexplainer import PGExplainer
+from utils.math_utils import sigmoid
 from utils.gen_utils import (
     filter_existing_edges,
     get_cmn_edges,

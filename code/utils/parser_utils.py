@@ -2,12 +2,13 @@ import argparse
 import numpy as np
 import torch
 import random
-from utils.path import DATA_DIR, LOG_DIR, MODEL_DIR, RESULT_DIR, MASK_DIR
+from utils.path import CKPT_ROOT, DATA_DIR, LOG_DIR, MODEL_DIR, RESULT_DIR, MASK_DIR, FIGURE_DIR
 
 
 def fix_random_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
+    torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
 
@@ -65,7 +66,7 @@ def arg_parse():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--dest", help="dest", type=str, default="/cluster/home/kamara/"
+        "--dest", help="dest", type=str, default=CKPT_ROOT
     )
     # saving data, model, figures
     parser.add_argument(
@@ -106,7 +107,7 @@ def arg_parse():
         "--fig_save_dir",
         help="Directory where figures are saved",
         type=str,
-        default="figures",
+        default=FIGURE_DIR,
     )
     parser.add_argument(
         "--draw_graph",
@@ -178,7 +179,7 @@ def arg_parse():
         "--num_epochs", dest="num_epochs", type=int, help="Number of epochs to train."
     )
     parser_train_params.add_argument(
-        "--num_early_stop", type=int, help="Num steps before stopping", default=0
+        "--num_early_stop", type=int, help="Num steps before stopping", default=50
     )
     parser_train_params.add_argument(
         "--milestones", type=int, help="Learning decay step size.", default=None
@@ -303,21 +304,22 @@ def arg_parse():
     )
 
     parser.set_defaults(
-        datadir="data",  # io_parser
-        logdir="log",
-        ckptdir="ckpt",
+        datadir=DATA_DIR,  # io_parser
+        logdir=LOG_DIR,
+        ckptdir=CKPT_ROOT,
         focus="phenomenon",
         mask_nature="hard",
         dataset_name="ba_house",
         width_basis=300,
         num_shapes=150,
         num_explained_y=5,
+        input_dim=1, # PF Added
         opt="adam",
         lr=0.005,
         num_epochs=400,
         train_ratio=0.8,
-        val_ratio=0.15,
-        test_ratio=0.1,
+        val_ratio=0.10,
+        test_ratio=0.1, # This is actually not used
         num_node_features=1,
         hidden_dim=20,
         num_classes=4,

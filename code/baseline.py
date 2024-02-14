@@ -41,7 +41,6 @@ from evaluate.mask_utils import mask_to_shape, clean, control_sparsity, get_mask
 from explainer.node_explainer import *
 from explainer.graph_explainer import *
 from pathlib import Path
-from torch_geometric.data import DataLoader
 
 
 class Baseline(object):
